@@ -2,16 +2,46 @@
 "use client";
 
 import { useEditor, EditorContent } from '@tiptap/react'
+import { useEditorStore } from '@/store/useEditorStore'; 
 import Table from '@tiptap/extension-table'
 import TableCell from '@tiptap/extension-table-cell'
 import TableHeader from '@tiptap/extension-table-header'
+import Image from '@tiptap/extension-image'
+import ImageResize from 'tiptap-extension-resize-image';
 import TableRow from '@tiptap/extension-table-row'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
 import StarterKit from '@tiptap/starter-kit'
-// Custom styling
+
 export const Editor = () => { 
+  const { setEditor } = useEditorStore();
+
+  // Custom styling
     const editor = useEditor({
+      onCreate({ editor }) { 
+      setEditor(editor);
+    },
+    onDestroy() { 
+      setEditor(null);
+    },
+    onUpdate({ editor }) { 
+      setEditor(editor)
+    },
+    onSelectionUpdate({ editor }) { 
+      setEditor(editor)
+    },
+    onTransaction({ editor }) { 
+      setEditor(editor)
+    },
+    onFocus({ editor }) { 
+      setEditor(editor)
+    },
+    onBlur({ editor}) { 
+      setEditor(editor)
+    },
+    onContentError({ editor }) { 
+      setEditor(editor)
+    },
       editorProps: { 
         attributes: { 
           style: "padding-left: 56px; padding-right: 56px;",
@@ -20,6 +50,8 @@ export const Editor = () => {
       },
         extensions: [
           StarterKit,
+          Image,
+          ImageResize,
           TaskItem.configure({ 
             nested: true,
           }),
@@ -46,6 +78,7 @@ export const Editor = () => {
         </table>
       `, 
   })
+
 
   //Controls background colour scheme 
   return ( 
