@@ -11,6 +11,9 @@ import ImageResize from 'tiptap-extension-resize-image';
 import TableRow from '@tiptap/extension-table-row'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
+import Underline from '@tiptap/extension-underline'
+import FontFamily from '@tiptap/extension-font-family'
+import TextStyle from '@tiptap/extension-text-style'
 import StarterKit from '@tiptap/starter-kit'
 
 export const Editor = () => { 
@@ -50,16 +53,23 @@ export const Editor = () => {
       },
         extensions: [
           StarterKit,
+          FontFamily,
+          TextStyle,
+          Underline,
           Image,
           ImageResize,
+          TaskList,
           TaskItem.configure({ 
             nested: true,
           }),
-          TaskList,
           Table,
-          TableCell,
-          TableHeader,
           TableRow,
+          TableHeader,
+          TableCell,
+          
+          
+          
+          
           ],
           content: `
         <table>
