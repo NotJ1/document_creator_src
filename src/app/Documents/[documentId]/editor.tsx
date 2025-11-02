@@ -3,6 +3,8 @@
 
 import { useEditor, EditorContent } from '@tiptap/react'
 import { useEditorStore } from '@/store/useEditorStore'; 
+import { Color } from '@tiptap/extension-color'
+import Highlight from '@tiptap/extension-highlight'
 import Table from '@tiptap/extension-table'
 import TableCell from '@tiptap/extension-table-cell'
 import TableHeader from '@tiptap/extension-table-header'
@@ -53,8 +55,12 @@ export const Editor = () => {
       },
         extensions: [
           StarterKit,
-          FontFamily,
           TextStyle,
+          Color,
+          FontFamily,
+          Highlight.configure({ 
+            multicolor: true,
+          }),
           Underline,
           Image,
           ImageResize,
@@ -92,7 +98,7 @@ export const Editor = () => {
 
   //Controls background colour scheme 
   return ( 
-        <div className="size-full overflwo-x-auto bg-[#F9FBFD] px-4 print:bg-white print:bg-white print:overflow-visible"> 
+        <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:bg-white print:bg-white print:overflow-visible"> 
           <div className="min-w-max flex justify-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0">
            <EditorContent editor={editor} />
           </div>
