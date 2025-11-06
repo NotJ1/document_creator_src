@@ -1,15 +1,18 @@
 // Makes compoment run on the client side 
 "use client";
+import { useEditorStore } from '@/store/useEditorStore' 
+import { FontSizeExtension } from '@/extensions/fontSize';
 
 import { useEditor, EditorContent } from '@tiptap/react'
-import { useEditorStore } from '@/store/useEditorStore'; 
 import { Color } from '@tiptap/extension-color'
+import TextAlign from '@tiptap/extension-text-align'
 import Highlight from '@tiptap/extension-highlight'
+import Link from '@tiptap/extension-link'
 import Table from '@tiptap/extension-table'
 import TableCell from '@tiptap/extension-table-cell'
 import TableHeader from '@tiptap/extension-table-header'
 import Image from '@tiptap/extension-image'
-import ImageResize from 'tiptap-extension-resize-image';
+import ImageResize from 'tiptap-extension-resize-image'
 import TableRow from '@tiptap/extension-table-row'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
@@ -55,6 +58,15 @@ export const Editor = () => {
       },
         extensions: [
           StarterKit,
+          FontSizeExtension,
+          TextAlign.configure({
+            types: ["heading", "paragraph"]
+          }),
+          Link.configure({ 
+            openOnClick: false,
+            autolink: true,
+            defaultProtocol: "https"
+          }),
           TextStyle,
           Color,
           FontFamily,

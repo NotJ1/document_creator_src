@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils";
-import { BoldIcon, ChevronDownIcon, ItalicIcon, ListTodoIcon, LucideIcon, MessageSquarePlusIcon, PrinterIcon, Redo2Icon, RemoveFormattingIcon, SpellCheckIcon, UnderlineIcon, Undo2Icon } from "lucide-react";
+import { AlignCenterIcon, AlignJustifyIcon, AlignLeftIcon, AlignRightIcon, BoldIcon, ChevronDownIcon, HighlighterIcon, Icon, ImageIcon, ItalicIcon, Link2Icon, ListIcon, ListOrderedIcon, ListTodoIcon, LucideIcon, MessageSquarePlusIcon, MinusIcon, PlusIcon, PrinterIcon, Redo2Icon, RemoveFormattingIcon, SearchIcon, SpellCheckIcon, UnderlineIcon, Undo2Icon, UploadIcon } from "lucide-react";
 import { useEditorStore } from '@/store/useEditorStore'; 
 import { Separator } from "@radix-ui/react-separator";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -9,9 +9,359 @@ import FontFamily from "@tiptap/extension-font-family";
 import { Value } from "@radix-ui/react-select";
 import TextStyle from "@tiptap/extension-text-style";
 import { type Level} from "@tiptap/extension-heading"
-import { type ColorResult, CirclePicker} from "react-color"
+import { type ColorResult, SketchPicker} from "react-color"
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {Dialog,DialogContent,DialogFooter,DialogHeader,DialogTitle,} from "@/components/ui/dialog"
+import TextAlign from "@tiptap/extension-text-align";
 
-// On click menu to highlight text
+// Method to allow users to change font size of text
+const FontSizeButton = () => { 
+  const { editor } = useEditorStore();
+
+  const currentFontSize = editor?.getAttributes("textStyle").fontSize
+    ? editor?.getAttributes("textStyle").fontSize.replace("px", "")
+    : "16";
+
+    const [fontSize, setfontSize] = useState(currentFontSize);
+    const [inputValue, setinputValue] = useState(fontSize);
+    const [isEditing, setisEditing] = useState(false);
+    
+    const updateFontSize = (newSize: string) => { 
+      const size = parseInt(newSize);
+      if(!isNaN(size) && size > 0) {
+        editor?.chain().focus().setFontSize(`${size}px`).run();
+        setfontSize(newSize);
+        setinputValue(newSize);
+        setisEditing(false);
+      }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setinputValue(e.target.value);
+    };
+
+    //Removes Blur focus and assumes user has finished typing their input
+    const handleInputBlur = () => { 
+      updateFontSize(inputValue);
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => { 
+      if (e.key === "Enter") { 
+        e.preventDefault();
+        updateFontSize(inputValue);
+        editor?.commands.focus();
+      }
+    };
+
+    const increase = () => { 
+      const newSize = parseInt(fontSize) + 1;
+      updateFontSize(newSize.toString());
+      
+    }
+
+    const decrease = () => { 
+      const newSize = parseInt(fontSize) - 1;
+      if(newSize > 0) { 
+        updateFontSize(newSize.toString());
+      }
+    }
+
+
+  return( 
+    <div className="flex items-center gap-x-0.5">
+      <button 
+      onClick={decrease}
+      className="h-7 min-w-7 shrink-0 flex items-center justify-center rounded-sm hover:bg-neutral-200/80"
+      >
+        <MinusIcon className="size-4" />
+      </button>
+      {isEditing ? ( 
+        <input 
+        type="text"
+        value={inputValue}
+        onChange={handleInputChange}
+        onBlur={handleInputBlur}
+        onKeyDown={handleKeyDown}
+        className="h-7 min-w-10 text-sm text-center border border-neutral-400 rounded-sm bg-transparent focus:outline-none focus:ring-0"
+        />
+      ) : (
+        <button
+        onClick={() =>{
+          setisEditing(true)
+          setfontSize(currentFontSize)
+        }}
+        className="h-7 min-w-10 text-sm text-center border border-neutral-400 rounded-sm hover:bg-neutral-200/80"
+        >
+          {currentFontSize}
+        </button>
+      )}
+      <button 
+      onClick={increase}
+      className="h-7 min-w-7 shrink-0 flex items-center justify-center rounded-sm hover:bg-neutral-200"
+      >
+      <PlusIcon className="size-4" />  
+      </button>
+    </div>   
+  );
+}
+
+// Method to allow users to add bullet points and numbered bullet points
+const ListButton = () => { 
+  const { editor } = useEditorStore();
+
+  const lists = [
+    {
+      label:"Bullet List",
+      icon: ListIcon,
+      isActive: () => editor?.isActive("bulletList"),
+      onClick: () => editor?.chain().focus().toggleBulletList().run(),
+    },
+    {
+      label:"Ordered List",
+      icon: ListOrderedIcon,
+      isActive: () => editor?.isActive("orderedList"),
+      onClick: () => editor?.chain().focus().toggleOrderedList().run(),
+    },
+  ]
+
+  return( 
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+        className="h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200 px-1.5 overflow-hidden text-sm"
+        >
+          <ListIcon className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-0">
+        {lists.map(({ label, icon: Icon, onClick, isActive }) => ( 
+          <button 
+          key={label}
+          onClick={onClick}
+          className={cn(
+            "flex items-center gap-x-2 rounded-sm hover:bg-neutral-200/80",
+            isActive() && "bg-neutral-200/80"
+          )}
+          >
+            <Icon className="size-4" />
+            <span className="text-sm">{label}</span>
+          </button>
+        ))}
+        
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+// Method to allow users to align text
+const AlignButton = () => { 
+  const { editor } = useEditorStore();
+
+  const alignments = [
+    {
+      label:"Align Left",
+      value: "left",
+      icon: AlignLeftIcon,
+    },
+    {
+      label:"Align Center",
+      value: "center",
+      icon: AlignCenterIcon,
+    },
+    {
+      label:"Align Right",
+      value: "right",
+      icon: AlignRightIcon,
+    },
+    {
+      label:"Align Justify",
+      value: "justify",
+      icon: AlignJustifyIcon,
+    }
+  ]
+
+  return( 
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+        className="h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200 px-1.5 overflow-hidden text-sm"
+        >
+          <AlignLeftIcon className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-0">
+        {alignments.map(({ label, value, icon: Icon }) => ( 
+          <button 
+          key={value}
+          onClick={() => editor?.chain().focus().setTextAlign(value).run()}
+          className={cn(
+            "flex items-center gap-x-2 rounded-sm hover:bg-neutral-200/80",
+            editor?.isActive({ TextAlign: value }) && "bg-neutral-200/80"
+          )}
+          >
+            <Icon className="size-4" />
+            <span className="text-sm">{label}</span>
+          </button>
+        ))}
+        
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+//Method to upload images and image URLS
+const ImageButton = () => { 
+  const { editor } = useEditorStore();
+  const [isDialogOpen, setIsDialogueOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+ 
+  // Accepts a url to insert an image
+   const onChange = (src : string) => { 
+    editor?.chain().focus().setImage({ src }).run();
+  };  
+
+  const onUpload = () => { 
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    input.onchange = (e) => { 
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) { 
+        const imageUrl = URL.createObjectURL(file);
+        onChange(imageUrl);
+      }
+    }
+    input.click()
+  }
+
+  const handleImageUrlSubmit = () => { 
+    if (imageUrl) { 
+      onChange(imageUrl);
+      setImageUrl("");
+      setIsDialogueOpen(false);
+    }
+  };
+  return( 
+    <>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+        className="h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200 px-1.5 overflow-hidden text-sm"
+        >
+          <ImageIcon className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-25 flex items-center gap-x-2">
+        <DropdownMenuItem onClick={onUpload}>
+          <UploadIcon className="size-4 mr-2" />
+          Upload 
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setIsDialogueOpen(true)}>
+          <SearchIcon className="size-4 mr-2" />
+          Paste image url 
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogueOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Insert image URL</DialogTitle>
+        </DialogHeader>
+        <Input
+        placeholder="Insert image URL"
+        value={imageUrl}
+        onChange={(e) => setImageUrl(e.target.value)}
+        onKeyDown={(e) => { 
+          if(e.key === "Enter") { 
+            handleImageUrlSubmit();
+          }
+        }}
+        />
+      <DialogFooter>
+        <Button onClick={handleImageUrlSubmit}>
+          Insert
+        </Button>
+      </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    </>
+  )
+
+
+
+}
+
+// Method to create a hyperlink
+const LinkButton = () => { 
+  const { editor } = useEditorStore();
+  const [value, setValue] = useState(editor?.getAttributes("link").href || "")
+
+   const onChange = (href: string) => { 
+    editor?.chain().focus().extendMarkRange("link").setLink({ href }).run();
+    setValue("");
+  };  
+  // Returns hyperlink address user has inputted 
+  return( 
+    <DropdownMenu onOpenChange={(open) => { 
+      if (open) {
+        setValue(editor?.getAttributes("link").href || "")}
+      }  
+    }>
+      <DropdownMenuTrigger asChild>
+        <button
+        className="h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200 px-1.5 overflow-hidden text-sm"
+        >
+          <Link2Icon className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-25 flex items-center gap-x-2">
+        <Input 
+          placeholder="https://example.com"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        /> 
+        <Button onClick={() => onChange(value)}>
+          Apply
+        </Button>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}  
+
+// Method to fully highlight text
+const HighlightColorButton = () => { 
+  const { editor } = useEditorStore();
+
+  const value = editor?.getAttributes("highlight").color || "FFFFFFFF"
+
+  const onChange = (color: ColorResult) => { 
+    editor?.chain().focus().setHighlight({ color: color.hex }).run();
+  };  
+
+  return( 
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+        className="h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200 px-1.5 overflow-hidden text-sm"
+        >
+          <HighlighterIcon className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-0">
+        <SketchPicker
+        color={value}
+        onChange={onChange}
+        />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+// Method for the highlight text menu
 const TextColourButton = () => { 
   const { editor } = useEditorStore();
 
@@ -31,8 +381,8 @@ const TextColourButton = () => {
           <div className="h-0.5 w-full" style={{ backgroundColor: value}} />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="p-2.5">
-        <CirclePicker 
+      <DropdownMenuContent className="p-0">
+        <SketchPicker
         color={value}
         onChange={onChange}
         />
@@ -40,6 +390,7 @@ const TextColourButton = () => {
     </DropdownMenu>
   )
 }
+
 // Dropdown menu to change heading size
 const HeadingLevelButton = () => { 
   const { editor } = useEditorStore();
@@ -245,7 +596,7 @@ export const Toolbar = () => {
       ],
     ];
     
-    //Iterates through toolbar features and returns the toolbar methods
+    //Iterates through toolbar features to display them in order and returns the toolbar methods
     return ( 
       <div className="bg-[#F1F4F9] px-2.5 py-0.5 rounded-[24px] min-h-[40px] flex items-center gap-x-0.5 overflow-x-auto">
         {sections[0].map((item) => ( 
@@ -256,14 +607,18 @@ export const Toolbar = () => {
         <Separator orientation="vertical" className="h-6 bg-neutral-300" />
         <HeadingLevelButton />
         <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+        <FontSizeButton />
         <Separator orientation="vertical" className="h-6 bg-neutral-300" />
         {sections[1].map((item) => (
         <ToolbarButton key={item.label} {...item} /> 
         ))} 
         <TextColourButton />
+        <HighlightColorButton />
         <Separator orientation="vertical" className="h-6 bg-neutral-300" />
-
-
+        <LinkButton />
+        <ImageButton />
+        <AlignButton />
+        <ListButton />
 
 
 
