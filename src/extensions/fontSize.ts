@@ -1,4 +1,4 @@
-import { Extension, getAttributes } from "@tiptap/react";
+import { Extension, } from "@tiptap/react";
 import"@tiptap/extension-text-style";
 
 // Added types to call inside the toolbar 
