@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import {Dialog,DialogContent,DialogFooter,DialogHeader,DialogTitle,} from "@/components/ui/dialog"
 import TextAlign from "@tiptap/extension-text-align";
 
+// Method to allow users to change the height of selected text
 const LineHeightButton = () => { 
   const { editor } = useEditorStore();
 
