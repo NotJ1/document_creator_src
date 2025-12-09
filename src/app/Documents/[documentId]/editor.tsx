@@ -4,9 +4,10 @@ import { useEditorStore } from '@/store/useEditorStore'
 import { FontSizeExtension } from '@/extensions/fontSize';
 import { LineHeightExtension } from '@/extensions/lineHeight';
 import { Ruler } from './ruler'
-
+import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
 import { useEditor, EditorContent } from '@tiptap/react'
 import { Color } from '@tiptap/extension-color'
+import { Threads } from './threads';
 import TextAlign from '@tiptap/extension-text-align'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
@@ -24,6 +25,7 @@ import TextStyle from '@tiptap/extension-text-style'
 import StarterKit from '@tiptap/starter-kit'
 
 export const Editor = () => { 
+  const liveblocks = useLiveblocksExtension();
   const { setEditor } = useEditorStore();
 
   // Custom styling
@@ -60,7 +62,10 @@ export const Editor = () => {
         },
       },
         extensions: [
-          StarterKit,
+          liveblocks,
+          StarterKit.configure({
+            history: false,
+          }),
           LineHeightExtension.configure({
             types: ["heading", "paragraph"],
             defaultLineHeight: "normal"
@@ -98,13 +103,12 @@ export const Editor = () => {
           ],
   })
 
-
-  //Controls background colour scheme 
   return ( 
-        <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:bg-white print:bg-white print:overflow-visible"> 
+        <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:bg-white:print:overflow-visible"> 
           <Ruler />
           <div className="min-w-max flex justify-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0">
            <EditorContent editor={editor} />
+           <Threads editor={editor}/>
           </div>
         </div>
     );

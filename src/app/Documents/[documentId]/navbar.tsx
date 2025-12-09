@@ -7,8 +7,8 @@ import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, Me
 import { DocumentInput }  from "./documentInput";
 import { BoldIcon, FileIcon, FileJsonIcon, FilePenIcon, FilePlusIcon, FileTextIcon, GlobeIcon, ItalicIcon, PrinterIcon, Redo2Icon, RemoveFormattingIcon, StrikethroughIcon, TextIcon, TrashIcon, UnderlineIcon, Undo2Icon } from "lucide-react";
 import { BsFilePdf } from "react-icons/bs";
-import { useEditor } from "@tiptap/react";
 import { useEditorStore } from "@/store/useEditorStore";
+import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 
 export const Navbar = () => { 
 
@@ -192,6 +192,15 @@ export const Navbar = () => {
                     </div>
 
                 </div>
+            </div>
+            <div className="flex gap-3 items-center pl-6">
+                <OrganizationSwitcher
+                afterCreateOrganizationUrl="/"
+                afterLeaveOrganizationUrl="/"
+                afterSelectOrganizationUrl="/"
+                afterSelectPersonalUrl="/"
+                 />
+                <UserButton />
             </div>
         </nav>
     );

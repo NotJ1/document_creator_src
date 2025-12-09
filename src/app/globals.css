@@ -140,7 +140,7 @@ body {
     }
 
     .selectedCell:after {
-      background: var(#c7c7c8);
+      background: #c7c7c8;
       content: '';
       left: 0;
       right: 0;
@@ -152,7 +152,7 @@ body {
     }
 
     .column-resize-handle {
-      background-color: var(#c7c7c7);
+      background-color: #c7c7c7;
       bottom: -2px;
       pointer-events: none;
       position: absolute;
@@ -266,3 +266,26 @@ body {
   }
 }
 
+/* For mobile */
+.floating-threads {
+  display: none;
+}
+
+/* For desktop */
+.anchored-threads {
+  display: block;
+  max-width: 300px;
+  width: 100%;
+  position: absolute;
+  right: 12px;
+}
+
+@media (max-width: 640px) {
+  .floating-threads {
+    display: block;
+  }
+}
+.anchored-threads {
+    display: none;
+  }
+ 

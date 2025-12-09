@@ -1,20 +1,17 @@
 "use client"
 
 import { cn } from "@/lib/utils";
-import { AlignCenterIcon, AlignJustifyIcon, AlignLeftIcon, AlignRightIcon, BoldIcon, ChevronDownIcon, HighlighterIcon, Icon, ImageIcon, ItalicIcon, Link2Icon, ListCollapseIcon, ListIcon, ListOrderedIcon, ListTodoIcon, LucideIcon, MessageSquarePlusIcon, MinusIcon, PlusIcon, PrinterIcon, Redo2Icon, RemoveFormattingIcon, SearchIcon, SpellCheckIcon, UnderlineIcon, Undo2Icon, UploadIcon } from "lucide-react";
+import { AlignCenterIcon, AlignJustifyIcon, AlignLeftIcon, AlignRightIcon, BoldIcon, ChevronDownIcon, HighlighterIcon, ImageIcon, ItalicIcon, Link2Icon, ListCollapseIcon, ListIcon, ListOrderedIcon, ListTodoIcon, LucideIcon, MessageSquarePlusIcon, MinusIcon, PlusIcon, PrinterIcon, Redo2Icon, RemoveFormattingIcon, SearchIcon, SpellCheckIcon, UnderlineIcon, Undo2Icon, UploadIcon } from "lucide-react";
 import { useEditorStore } from '@/store/useEditorStore'; 
 import { Separator } from "@radix-ui/react-separator";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import FontFamily from "@tiptap/extension-font-family";
-import { Value } from "@radix-ui/react-select";
-import TextStyle from "@tiptap/extension-text-style";
 import { type Level} from "@tiptap/extension-heading"
 import { type ColorResult, SketchPicker} from "react-color"
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {Dialog,DialogContent,DialogFooter,DialogHeader,DialogTitle,} from "@/components/ui/dialog"
-import TextAlign from "@tiptap/extension-text-align";
+
 
 // Method to allow users to change the height of selected text
 const LineHeightButton = () => { 
@@ -618,8 +615,8 @@ export const Toolbar = () => {
         {
         label: "Comment",
           icon: MessageSquarePlusIcon,
-          onClick: () => console.log("Comment"),
-          isActive: false,
+          onClick: () => editor?.chain().focus().addPendingComment().run(),
+          isActive: editor?.isActive("liveblocksCommentMark")
         },
         {
         label: "List Todo",

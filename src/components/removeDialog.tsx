@@ -6,6 +6,7 @@ import { AlertDialogCancel } from "@radix-ui/react-alert-dialog";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api"
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface RemoveDialogProps { 
     documentId: Id<"documents">;
@@ -38,6 +39,8 @@ export const RemoveDialog = ({ documentId, children}: RemoveDialogProps) => {
                     e.stopPropagation();
                     setIsRemoving(true);
                     remove({ id: documentId})
+                    .catch(() => toast.error("You do not have permission to remove this document."))
+                    .then(() => toast.success("Document removed"))
                     .finally(() => setIsRemoving(false));
                 }}
                 >

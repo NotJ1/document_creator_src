@@ -5,12 +5,14 @@ import { TemplatesGallery } from "./templatesGallery";
 import { usePaginatedQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api"
 import { DocumentsTable } from "./documentsTable";
+import { useSearchParam } from "@/hooks/useSearchparam";
 
 const Home = () => { 
+    const [search] = useSearchParam();
     const { 
         results,
          status,
-          loadMore } = usePaginatedQuery(api.documents.get, {}, { initialNumItems: 5});
+          loadMore } = usePaginatedQuery(api.documents.get, { search }, { initialNumItems: 5});
 
 
     return ( 
