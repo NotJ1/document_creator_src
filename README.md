@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+Welcome to Document Creator - A Collaborative Real-time Editor
+
+[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/NotJ1/document_creator_src)
+
+This is a full-stack, real-time collaborative document editor, similar to Google Docs, built with a modern tech stack. It allows users to create, edit, manage, and share documents in real-time, both for personal use and within organisations.
+
+## Background 
+
+
+## Features
+
+-   **Real-time Collaborative Editing**: Multiple users can edit the same document simultaneously, with live cursor tracking and presence avatars, powered by Liveblocks.
+-   **Rich Text Editor**: A comprehensive Tiptap-based editor supporting:
+    -   Headings, paragraphs, and various font families.
+    -   Font size and line height adjustments.
+    -   Bold, italic, underline, and strikethrough formatting.
+    -   Text alignment, color customization, and highlighting.
+    -   Bullet, numbered, and task lists.
+    -   Tables, hyperlinks, and image embedding (from URL or upload) with resizing.
+-   **Authentication & Authorization**: Secure user and organization management provided by Clerk, allowing for both personal and team-based document ownership.
+-   **Document Management**: A dashboard to view, search, create, rename, and delete documents.
+-   **Template Gallery**: Start new documents quickly from a variety of templates like resumes, proposals, and letters.
+-   **Commenting System**: Add and resolve threaded comments directly within the document for seamless feedback and discussion.
+-   **Export Options**: Print documents to PDF or save them as HTML, JSON, or plain text.
+-   **Responsive Design**: A clean, modern UI that works seamlessly on both desktop and mobile devices, built with Shadcn/UI and Tailwind CSS.
+-   **Real-time Backend**: Convex powers the backend, providing a real-time database and serverless functions for all document operations.
+
+## Tech Stack
+-   **Framework**: Next.js (App Router)
+-   **Language**: TypeScript
+-   **Backend & Database**: Convex
+-   **Real-time Collaboration**: Liveblocks
+-   **Authentication**: Clerk
+-   **Text Editor**: Tiptap
+-   **Styling**: Tailwind CSS
+-   **UI Components**: Shadcn/UI
+-   **State Management**: Zustand
+-   **URL State Management**: Nuqs 
 
 ## Getting Started
 
-First, run the development server:
+To get a local copy up and running, follow these steps.
+
+### Prerequisites
+
+You will need to create accounts and projects on the following platforms:
+-   [Convex](https://convex.dev)
+-   [Clerk](https://clerk.com)
+-   [Liveblocks](https://liveblocks.io)
+
+### 1. Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/notj1/document_creator_src.git
+cd document_creator_src
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Dependencies are managed with npm (use npm install when installing these and you may use --force or --legacy-peer-deps) and locked via
+package-lock.json for consistent installs.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Set Up Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a file named `.env.local` in the root of your project and add the following environment variables. You'll get these values from the services you set up in the prerequisites.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+# Convex
+NEXT_PUBLIC_CONVEX_URL= # Found in your Convex project settings
 
-## Deploy on Vercel
+# Clerk
+# Found in your Clerk project's API Keys section
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Liveblocks
+LIVEBLOCKS_SECRET_KEY= # Found in your Liveblocks project settings
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 4. Configure Convex with Clerk
+
+In your Convex project dashboard, navigate to `Settings -> Auth` and configure a new provider for Clerk using the `CLERK_JWT_ISSUER_DOMAIN` value from your `.env.local` file.
+
+### 5. Run the Application
+
+You need to run two processes in separate terminals: one for the Convex backend and one for the Next.js frontend.
+
+1.  **Start the Convex development server:**
+    This command will sync your backend schema and functions with the Convex cloud. Follow the CLI prompts to link your project.
+
+    ```bash
+    npx convex dev
+    ```
+
+2.  **Start the Next.js development server:**
+
+    ```bash
+    npm run dev
+    ```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. You can now sign up and start creating documents
+## How to customise the convex schema 
+Navigate to the schema.ts file
+```
+import { defineSchema, defineTable } from "convex/server";
+import { v } from "convex/values";
+
+export default defineSchema({
+  documents: defineTable({
+    title: v.string(),
+    initialContent: v.optional(v.string()),
+    ownerId: v.string(),
+    roomId: v.optional(v.string()),
+    organisationId: v.optional(v.string()),
+  })
+
+  .index("by_owner_id", ["ownerId"])
+  .index("by_organisation_id", ["organisationId"])
+  .searchIndex("search_title", { 
+    searchField: "title",
+    filterFields: ["ownerId", "organisationId"],
+  }), 
+});
+```
+
+
+### Known issues 
+
