@@ -58,10 +58,8 @@ cd document_creator_src
 
 ### 2. Install Dependencies
 
-
-Dependencies are managed with npm (use npm install when installing these and you may use --force or --legacy-peer-deps) and locked via
+Dependencies are managed with npm (use npm install when installing these and you may use --force or --legacy-peer-deps) and are locked via
 package-lock.json for consistent installs.
-
 
 ### 3. Set Up Environment Variables
 
@@ -101,31 +99,36 @@ You need to run two processes in separate terminals: one for the Convex backend 
     npm run dev
     ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. You can now sign up and start creating documents
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. You can now sign up and start creating documents!
+
 ## How to customise the convex schema 
-Navigate to the schema.ts file
+https://docs.convex.dev/database/schemas - Link to the convex database documentation 
+
+To edit the schema navigate to [`convex/schema.ts`](./convex/schema.ts) 
+
+Below is the schema for my project
 ```
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
   documents: defineTable({
-    title: v.string(),
-    initialContent: v.optional(v.string()),
-    ownerId: v.string(),
-    roomId: v.optional(v.string()),
-    organisationId: v.optional(v.string()),
+    title: v.string(), // Dcoument Name
+    initialContent: v.optional(v.string()), //Template text
+    ownerId: v.string(), //User ID of the document owner
+    roomId: v.optional(v.string()), //Liveblocks room ID for collaboration
+    organisationId: v.optional(v.string()), //Org the document belongs to
   })
 
-  .index("by_owner_id", ["ownerId"])
-  .index("by_organisation_id", ["organisationId"])
-  .searchIndex("search_title", { 
-    searchField: "title",
-    filterFields: ["ownerId", "organisationId"],
+  .index("by_owner_id", ["ownerId"])//Query documents by owner
+  .index("by_organisation_id", ["organisationId"]) //Query documents by org
+  .searchIndex("search_title", {  
+    searchField: "title", //Full text search on document titles
+    filterFields: ["ownerId", "organisationId"], //Scope search for documents to individual owner or org
   }), 
 });
 ```
 
-
 ### Known issues 
-
+When a user from the same organisation attempts to view a document created by a user in the same organisation liveblocks will sometimes return an 404 user is not authorised message.
+When a user creates a document that is meant to have a pre defined template the document is blank instead of showing the template 
