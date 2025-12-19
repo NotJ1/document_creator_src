@@ -58,8 +58,7 @@ cd document_creator_src
 
 ### 2. Install Dependencies
 
-Dependencies are managed with npm (use npm install when installing these and you may use --force or --legacy-peer-deps) and are locked via
-package-lock.json for consistent installs.
+Dependencies are managed with npm (use npm install when installing these and you may use --force or --legacy-peer-deps) and are locked via package-lock.json for consistent installs.
 
 ### 3. Set Up Environment Variables
 
@@ -131,4 +130,5 @@ export default defineSchema({
 
 ### Known issues 
 When a user from the same organisation attempts to view a document created by a user in the same organisation liveblocks will sometimes return an 404 user is not authorised message.
+
 When a user creates a document that is meant to have a pre defined template the document is blank instead of showing the template 
