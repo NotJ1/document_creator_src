@@ -1,12 +1,7 @@
 
 Welcome to Document Creator - A Collaborative Real-time Editor
 
-[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/NotJ1/document_creator_src)
-
 This is a full-stack, real-time collaborative document editor, similar to Google Docs, built with a modern tech stack. It allows users to create, edit, manage, and share documents in real-time, both for personal use and within organisations.
-
-## Background 
-
 
 ## Features
 
