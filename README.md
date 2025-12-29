@@ -53,7 +53,7 @@ cd document_creator_src
 
 ### 2. Install Dependencies
 
-Dependencies are managed with npm (use npm install when installing these and you may use --force or --legacy-peer-deps) and are locked via package-lock.json for consistent installs.
+Dependencies are managed with npm (use npm install when installing these) and you may have to use --force or --legacy-peer-deps if you encounter issues during installation and are locked via package-lock.json for consistent installs.
 
 ### 3. Set Up Environment Variables
 
