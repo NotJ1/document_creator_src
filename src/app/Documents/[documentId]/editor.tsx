@@ -23,9 +23,18 @@ import Underline from '@tiptap/extension-underline'
 import FontFamily from '@tiptap/extension-font-family'
 import TextStyle from '@tiptap/extension-text-style'
 import StarterKit from '@tiptap/starter-kit'
+import { useStorage } from '@liveblocks/react';
 
-export const Editor = () => { 
-  const liveblocks = useLiveblocksExtension();
+interface EditorProps { 
+  initialContent?: string | undefined;
+}
+
+export const Editor = ({ initialContent}: EditorProps) => { 
+  
+
+  const liveblocks = useLiveblocksExtension({
+    initialContent,
+  });
   const { setEditor } = useEditorStore();
 
   // Custom styling
@@ -87,7 +96,7 @@ export const Editor = () => {
           }),
           Underline,
           Image,
-          ImageResize,
+          // ImageResize,
           TaskList,
           TaskItem.configure({ 
             nested: true,
