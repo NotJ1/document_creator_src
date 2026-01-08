@@ -9,7 +9,7 @@ export const templates = [
         id: "software proposal",
         label: "Software development proposal",
         imageUrl: "/software-proposal.svg",
-        initalContent: `
+        initialContent: `
         <h1>Software Development Proposal</h1>
         <h2>Executive Summary</h2>
       <p>
@@ -54,7 +54,8 @@ export const templates = [
     {
         id: "project proposal",
         label: "Project proposal",
-        imageUrl: "/Project-proposal.svg",
+        imageUrl: "/project-proposal.svg",
+        
     },
     {
         id: "business letter",

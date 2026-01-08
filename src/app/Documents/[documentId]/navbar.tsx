@@ -10,8 +10,13 @@ import { BsFilePdf } from "react-icons/bs";
 import { useEditorStore } from "@/store/useEditorStore";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { Avatars } from "./avatars";
+import { Doc } from "../../../../convex/_generated/dataModel";
 
-export const Navbar = () => { 
+interface NavbarProps { 
+    data: Doc<"documents">;
+};
+
+export const Navbar = ({ data }: NavbarProps) => { 
 
     const { editor } = useEditorStore();
 
@@ -32,7 +37,7 @@ export const Navbar = () => {
             const blob = new Blob([content], {
             type: "text/plain",
         });
-        onDownload(blob, `document.txt`)
+        onDownload(blob, `${data.title}.txt`)
     };
 
         const onSaveHTML = () => {
@@ -41,7 +46,7 @@ export const Navbar = () => {
             const blob = new Blob([JSON.stringify(content)], {
             type: "text/html",
         });
-        onDownload(blob, `document.html`)
+        onDownload(blob, `${data.title}.html`)
     };
 
         const onSaveJSON = () => {
@@ -50,7 +55,7 @@ export const Navbar = () => {
             const blob = new Blob([JSON.stringify(content)], {
             type: "application/json",
         });
-        onDownload(blob, `document.json`)
+        onDownload(blob, `${data.title}.json`)
     };
 
        
@@ -62,7 +67,7 @@ export const Navbar = () => {
                 <Image src="/logo.svg" alt="Logo" width={36} height={36}/>
                 </Link>
                 <div className="flex flex-col">
-                    <DocumentInput />
+                    <DocumentInput title={data.title} id={data._id} />
                     <div className="flex">
                         <Menubar className="border-none bg-transparent shadow-none h-auto p-0">
                             <MenubarMenu>
