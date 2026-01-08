@@ -1,7 +1,7 @@
 
 Welcome to Document Creator - A Collaborative Real-time Editor
 
-This is a full-stack, real-time collaborative document editor, similar to Google Docs, built with a modern tech stack. It allows users to create, edit, manage, and share documents in real-time, both for personal use and within organisations.
+This is a full-stack, real-time collaborative document editor, built with a modern tech stack. It allows users to create, edit, manage, and share documents in real time both for personal use and within organisations.
 
 ## Features
 
@@ -99,6 +99,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 https://docs.convex.dev/database/schemas - Link to the convex database documentation 
 
 To edit the schema navigate to [`convex/schema.ts`](./convex/schema.ts) 
+
+
 
 Below is the schema for my project
 ```
